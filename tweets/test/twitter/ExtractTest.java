@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
@@ -62,19 +63,6 @@ public class ExtractTest {
         assertEquals(d1, timespan.getStart());
         assertEquals(d3, timespan.getEnd());
     }
-    
-    @Test
-    public void testGetMentionedUsersNoMention() {
-        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet1));
-        assertTrue("expected empty set", mentionedUsers.isEmpty());
-    }
-    
-    @Test
-    public void testGetEmptyTweet() {
-        Timespan timespan = Extract.getTimespan(new ArrayList<Tweet>());
-        assertEquals(timespan.getEnd(), timespan.getStart());         
-    }
-    
     /*
      * Warning: all the tests you write here must be runnable against any
      * Extract class that follows the spec. It will be run against several staff
@@ -88,5 +76,55 @@ public class ExtractTest {
      * them in a different class. If you only need them in this test class, then
      * keep them in this test class.
      */
+    
+    @Test
+    public void testGetEmptyTweet() {
+        Timespan timespan = Extract.getTimespan(new ArrayList<Tweet>());
+        assertEquals(timespan.getEnd(), timespan.getStart());         
+    }
+    
+    @Test
+    public void testGetMentionedUsersNoMention() {
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet1));
+        assertTrue("Empty Set", mentionedUsers.isEmpty());
+    }
+    
+    @Test
+    public void testGetMentionedUsersOneMentionOneTweet() {   
+    	
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet4));
+        Set<String> mentionedUsersLowerCase = new HashSet<>();
+        
+        for (String mentionedUser : mentionedUsers) {
+            mentionedUsersLowerCase.add(mentionedUser.toLowerCase());
+        }
+        assertTrue(mentionedUsersLowerCase.contains("test1"));
+    }
+    
+    @Test
+    public void testGetMentionedUsersTwoMentionOneTweet() {   
+    	
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet5));
+        Set<String> mentionedUsersLowerCase = new HashSet<>();
+        
+        for (String mentionedUser : mentionedUsers) {
+            mentionedUsersLowerCase.add(mentionedUser.toLowerCase());
+        }
+        
+        assertTrue(mentionedUsersLowerCase.containsAll(Arrays.asList("test1", "test2")));
+    }
+    
+        
+    @Test
+    public void testGetMentionedUsersTwoeMentionOneTweetrepeateduser() {         
+    	
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet6));
+        Set<String> mentionedUsersLowerCase = new HashSet<>();
+        
+        for (String mentionedUser : mentionedUsers) {
+            mentionedUsersLowerCase.add(mentionedUser.toLowerCase());
+        }
+        assertTrue(mentionedUsersLowerCase.contains("test1"));
+    }
 
 }
