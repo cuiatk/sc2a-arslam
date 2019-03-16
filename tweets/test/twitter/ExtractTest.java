@@ -26,7 +26,7 @@ public class ExtractTest {
     private static final Instant d3 = Instant.parse("2018-03-17T11:00:00Z");
     private static final Instant d4 = Instant.parse("2018-03-17T11:45:00Z");
     private static final Instant d5 = Instant.parse("2018-03-17T11:47:00Z");
-    private static final Instant d6 = Instant.parse("2018-03-17T10:47:00Z");
+    private static final Instant d6 = Instant.parse("2018-03-17T11:47:00Z");
     
     private static final Tweet tweet1 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
     private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
@@ -40,6 +40,13 @@ public class ExtractTest {
     public void testAssertionsEnabled() {
         assert false; // make sure assertions are enabled with VM argument: -ea
     }
+    
+    @Test
+    public void testGetEmptyTweet() {
+        Timespan timespan = Extract.getTimespan(new ArrayList<Tweet>());
+        assertEquals(timespan.getEnd(), timespan.getStart());         
+    }
+    
     
     @Test
     public void testGetTimespanOneTweet() {
@@ -63,6 +70,28 @@ public class ExtractTest {
         assertEquals(d1, timespan.getStart());
         assertEquals(d3, timespan.getEnd());
     }
+    
+    @Test
+    public void testGetTimespanFourTweets() {
+        Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet2, tweet3,tweet4));
+        
+        assertEquals(d1, timespan.getStart());
+        assertEquals(d4, timespan.getEnd());
+    }
+    @Test
+    public void testGetTimespanFiveTweets() {
+        Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet2, tweet3,tweet4,tweet5));
+        
+        assertEquals(d1, timespan.getStart());
+        assertEquals(d5, timespan.getEnd());
+    }
+    @Test
+    public void testGetTimespanSixTweets() {
+        Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet2, tweet3,tweet4,tweet5,tweet6));
+        
+        assertEquals(d1, timespan.getStart());
+        assertEquals(d6, timespan.getEnd());
+    }
     /*
      * Warning: all the tests you write here must be runnable against any
      * Extract class that follows the spec. It will be run against several staff
@@ -77,11 +106,6 @@ public class ExtractTest {
      * keep them in this test class.
      */
     
-    @Test
-    public void testGetEmptyTweet() {
-        Timespan timespan = Extract.getTimespan(new ArrayList<Tweet>());
-        assertEquals(timespan.getEnd(), timespan.getStart());         
-    }
     
     @Test
     public void testGetMentionedUsersNoMention() {
@@ -110,7 +134,7 @@ public class ExtractTest {
         for (String mentionedUser : mentionedUsers) {
             mentionedUsersLowerCase.add(mentionedUser.toLowerCase());
         }
-        
+ 
         assertTrue(mentionedUsersLowerCase.containsAll(Arrays.asList("test1", "test2")));
     }
     
